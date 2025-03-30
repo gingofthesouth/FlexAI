@@ -19,8 +19,6 @@ final class FlexAIClientTests: XCTestCase {
     }
     
     func testChatCompletionRequest() async throws {
-        // This is a placeholder for actual API testing
-        // In a real test, you would mock the network calls
         let request = ChatCompletionRequest(
             model: "gpt-4",
             messages: [Message(role: "user", content: "Hello")],
