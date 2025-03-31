@@ -23,20 +23,53 @@ public struct ListResponse<T: Codable & Sendable>: Codable, Sendable {
 public struct Model: Codable, Identifiable, Sendable {
     public let id: String
     public let object: String
-    public let created: Int
+    public let created: Int // Keep as non-optional
     public let ownedBy: String
-    public let permission: [Permission]
+    public let permission: [Permission] // Keep as non-optional
     public let root: String?
     public let parent: String?
-    
+
     enum CodingKeys: String, CodingKey {
         case id
         case object
         case created
-        case ownedBy = "owned_by"
+        case ownedBy = "owned_by" // Matches LM Studio & OpenAI
         case permission
         case root
         case parent
+    }
+
+    public init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+
+        id = try container.decode(String.self, forKey: .id)
+        object = try container.decode(String.self, forKey: .object)
+        ownedBy = try container.decode(String.self, forKey: .ownedBy)
+        created = try container.decodeIfPresent(Int.self, forKey: .created) ?? 0
+        permission = try container.decodeIfPresent([Permission].self, forKey: .permission) ?? []
+        root = try container.decodeIfPresent(String.self, forKey: .root)
+        parent = try container.decodeIfPresent(String.self, forKey: .parent)
+    }
+
+    public func encode(to encoder: Encoder) throws {
+        var container = encoder.container(keyedBy: CodingKeys.self)
+        try container.encode(id, forKey: .id)
+        try container.encode(object, forKey: .object)
+        try container.encode(created, forKey: .created) // Encode the potentially defaulted value
+        try container.encode(ownedBy, forKey: .ownedBy)
+        try container.encode(permission, forKey: .permission) // Encode the potentially defaulted value
+        try container.encodeIfPresent(root, forKey: .root)
+        try container.encodeIfPresent(parent, forKey: .parent)
+    }
+
+    public init(id: String, object: String, created: Int, ownedBy: String, permission: [Permission], root: String?, parent: String?) {
+        self.id = id
+        self.object = object
+        self.created = created
+        self.ownedBy = ownedBy
+        self.permission = permission
+        self.root = root
+        self.parent = parent
     }
 }
 
