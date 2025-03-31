@@ -17,6 +17,15 @@ public struct ListResponse<T: Codable & Sendable>: Codable, Sendable {
         case firstId = "first_id"
         case lastId = "last_id"
     }
+    
+    public init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        object = try container.decode(String.self, forKey: .object)
+        data = try container.decode([T].self, forKey: .data)
+        hasMore = try container.decodeIfPresent(Bool.self, forKey: .hasMore) ?? false
+        firstId = try container.decodeIfPresent(String.self, forKey: .firstId)
+        lastId = try container.decodeIfPresent(String.self, forKey: .lastId)
+    }
 }
 
 /// Model information
