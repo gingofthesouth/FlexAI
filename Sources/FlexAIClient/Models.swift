@@ -23,9 +23,9 @@ public struct ListResponse<T: Codable & Sendable>: Codable, Sendable {
 public struct Model: Codable, Identifiable, Sendable {
     public let id: String
     public let object: String
-    public let created: Int // Keep as non-optional
+    public let created: Int
     public let ownedBy: String
-    public let permission: [Permission] // Keep as non-optional
+    public let permission: [Permission]
     public let root: String?
     public let parent: String?
 
@@ -33,7 +33,7 @@ public struct Model: Codable, Identifiable, Sendable {
         case id
         case object
         case created
-        case ownedBy = "owned_by" // Matches LM Studio & OpenAI
+        case ownedBy = "owned_by"
         case permission
         case root
         case parent
@@ -55,9 +55,9 @@ public struct Model: Codable, Identifiable, Sendable {
         var container = encoder.container(keyedBy: CodingKeys.self)
         try container.encode(id, forKey: .id)
         try container.encode(object, forKey: .object)
-        try container.encode(created, forKey: .created) // Encode the potentially defaulted value
+        try container.encode(created, forKey: .created)
         try container.encode(ownedBy, forKey: .ownedBy)
-        try container.encode(permission, forKey: .permission) // Encode the potentially defaulted value
+        try container.encode(permission, forKey: .permission)
         try container.encodeIfPresent(root, forKey: .root)
         try container.encodeIfPresent(parent, forKey: .parent)
     }
