@@ -225,15 +225,21 @@ public struct ChatCompletionRequest: Codable {
 }
 
 /// Chat message
-public struct Message: Codable, Sendable {
+public struct Message: Identifiable, Equatable, Codable, Sendable {
+    public let id: UUID
     public let role: String
     public let content: String
     public let name: String?
     
-    public init(role: String, content: String, name: String? = nil) {
+    public init(id: UUID = UUID(), role: String, content: String, name: String? = nil) {
+        self.id = id
         self.role = role
         self.content = content
         self.name = name
+    }
+    
+    public static func == (lhs: Message, rhs: Message) -> Bool {
+        lhs.id == rhs.id
     }
 }
 
