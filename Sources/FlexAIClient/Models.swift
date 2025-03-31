@@ -51,9 +51,9 @@ public struct Model: Codable, Identifiable, Sendable {
     public init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
 
-        id = try container.decode(String.self, forKey: .id)
-        object = try container.decode(String.self, forKey: .object)
-        ownedBy = try container.decode(String.self, forKey: .ownedBy)
+        id = try container.decodeIfPresent(String.self, forKey: .id) ?? UUID().uuidString
+        object = try container.decodeIfPresent(String.self, forKey: .object) ?? ""
+        ownedBy = try container.decodeIfPresent(String.self, forKey: .ownedBy) ?? ""
         created = try container.decodeIfPresent(Int.self, forKey: .created) ?? 0
         permission = try container.decodeIfPresent([Permission].self, forKey: .permission) ?? []
         root = try container.decodeIfPresent(String.self, forKey: .root)
@@ -283,6 +283,15 @@ public struct Message: Identifiable, Equatable, Codable, Sendable {
     public static func == (lhs: Message, rhs: Message) -> Bool {
         lhs.id == rhs.id
     }
+    
+    public init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        id = try container.decodeIfPresent(UUID.self, forKey: .id) ?? UUID()
+        role = try container.decodeIfPresent(String.self, forKey: .role) ?? ""
+        content = try container.decodeIfPresent(String.self, forKey: .content) ?? ""
+        name = try container.decodeIfPresent(String.self, forKey: .name)
+    }
+
 }
 
 /// Chat completion response
